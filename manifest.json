@@ -5,10 +5,6 @@
   "version": "1.0.5",
   "homepage_url": "https://www.github.com/frankforte/quantumphp",
   "icons": {
-    "16": "icon-dark16.png",
-    "32": "icon-dark32.png",
-    "48": "icon-dark48.png",
-    "64": "icon-dark64.png",
     "16": "icon16.png",
     "32": "icon32.png",
     "48": "icon48.png",

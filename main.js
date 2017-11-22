@@ -110,7 +110,7 @@ ffQunatumPhp.show_console = function(){
 	document.cookie = "fortephplog=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 
-document.addEventListener("DOMContentLoaded", ffQunatumPhp.show_console);
+document.addEventListener("DOMContentLoaded", function(){ffQunatumPhp.show_console()});
 
 
 if(typeof(browser) != "undefined"){

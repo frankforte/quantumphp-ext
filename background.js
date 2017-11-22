@@ -59,6 +59,41 @@ ffQunatumPhp.off = function(){
 }
 
 
+ffQunatumPhp.restoreOptions = function() {
+
+	browser.storage.sync.set({
+		enabled: ffQunatumPhp.enabled
+	});
+
+  console.log("restoreOptions")
+  
+  var storageItem = browser.storage.managed.get('enabled');
+   
+   console.log(storageItem);
+   
+  function setCurrentChoice(result) {
+    ffQunatumPhp.enabled = result.enabled || false;
+	ffQunatumPhp.enabled ? ffQunatumPhp.on() : ffQunatumPhp.off();
+  }
+
+  function onError(error) {
+    console.log(`Error: ${error}`);
+  }
+
+  var getting = browser.storage.local.get("enabled");
+  getting.then(setCurrentChoice, onError);
+}
+
+browser.browserAction.onClicked.addListener((tab) => {
+  // disable the active tab
+  browser.browserAction.disable(tab.id);
+  // requires the "tabs" or "activeTab" permission
+  console.log(tab.url);
+});
 browser.browserAction.onClicked.addListener(ffQunatumPhp.toggle);
 
-browser.browserAction.setBadgeText('1337')
+
+document.addEventListener("DOMContentLoaded", function(){
+	ffQunatumPhp.restoreOptions();
+	browser.browserAction.onClicked.addListener(function(){ffQunatumPhp.toggle()});
+});
