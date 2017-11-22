@@ -58,7 +58,7 @@ ffQunatumPhp.getcookie = function(c_name){
  * Retrieves and parses the server log, and adds it to the developer console
  */
 ffQunatumPhp.show_console = function(){
-	console.log(ffQunatumPhp.enabled)
+	console.log(browser.storage.local.get("enabled"))
 	try{
 		// get logs from gookie, one bite at a time
 		var log = "";
@@ -70,7 +70,7 @@ ffQunatumPhp.show_console = function(){
 			}
 			i++;
 		} while (bite);
-		
+
 		// no logs in the cookies? check HTML body for logs
 		if(!log){
 			for(var i in document.childNodes){
@@ -83,7 +83,7 @@ ffQunatumPhp.show_console = function(){
 					}
 				}
 			}
-		} 
+		}
 		if(log !== ""){ log = JSON.parse(atob(log)); }
 
 		if(log){
@@ -106,11 +106,16 @@ ffQunatumPhp.show_console = function(){
 			}
 		}
 	} catch (e) {console.log(e)}
-	// clear cookie to prevent repeated logs
+
+
+	// clear cookie to prevent repeated logs, and avoid sending logs back to sever
 	document.cookie = "fortephplog=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
+ffQunatumPhp.show_console()
 
-document.addEventListener("DOMContentLoaded", function(){ffQunatumPhp.show_console()});
+document.addEventListener("DOMContentLoaded", function(){
+	ffQunatumPhp.show_console();
+});
 
 
 if(typeof(browser) != "undefined"){
@@ -118,5 +123,3 @@ browser.cookies.onChanged.addListener(ffQunatumPhp.show_console);
 } else if (typeof(chrome) != "undefined"){
 chrome.cookies.onChanged.addListener(ffQunatumPhp.show_console);
 }
-
-console.log( browser.browserAction );
