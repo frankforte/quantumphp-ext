@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+// prevent errors in browsers without console
 if(!console){
 	console = {};
 	var calls = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
@@ -41,27 +42,47 @@ if(!console){
 ffQunatumPhp.getcookie = function(c_name){
 	var c_value = document.cookie;
 	var c_start = c_value.indexOf(" " + c_name + "=");
-
 	if (c_start == -1){ c_start = c_value.indexOf(c_name + "=");}
-	if (c_start == -1){ c_value = null;}
-	else{
+	if (c_start == -1){
+		c_value = null;
+	} else {
 		c_start = c_value.indexOf("=", c_start) + 1;
 		var c_end = c_value.indexOf(";", c_start);
 		if (c_end == -1){ c_end = c_value.length; }
 		c_value = unescape(c_value.substring(c_start,c_end));
-		if(c_value) {
-			try{ var v = JSON.parse(c_value); return v;} catch (e) {}
-		}
 	}
 	return c_value;
 };
 /**
  * Retrieves and parses the server log, and adds it to the developer console
- */
-ffQunatumPhp.show_console = function(){
+ */ffQunatumPhp.show_console = function(){
 	try{
-		// get logs from gookie
-		var log = JSON.parse(atob(ffQunatumPhp.getcookie('fortephplog')));
+		// get logs from gookie, one bite at a time
+		var log = "";
+		var i = 0;
+		do{
+			var bite = ffQunatumPhp.getcookie('fortephplog'+i);
+			if(bite != null){
+				log = log+bite;
+			}
+			i++;
+		} while (bite);
+		
+		// no logs in the cookies? check HTML body for logs
+		if(!log){
+			for(var i in document.childNodes){
+
+				if(document.childNodes[i].nodeType == 8){
+					var match = document.childNodes[i].nodeValue.match(/ fortephplog ([^> ]+) /);
+					if(match){
+						log = match[1];
+						break;
+					}
+				}
+			}
+		} 
+		if(log !== ""){ log = JSON.parse(atob(log)); }
+
 		if(log){
 
 			for(var i in log["rows"]){
@@ -69,17 +90,21 @@ ffQunatumPhp.show_console = function(){
 				if(log["rows"][i][2] == "table"){
 					console.table(log["rows"][i][0][0]);
 				} else {
-
 					for(var j in log["rows"][i][0]){
-						console[log["rows"][i][2]](log["rows"][i][0][j] + " in " +log["rows"][i][1]);
+// console.log(log["rows"][i][0])
+						if(typeof console[ log["rows"][i][2] ] != "undefined" ){
+							console[log["rows"][i][2]](log["rows"][i][0][j] + " [" +log["rows"][i][1]+"]");
+						} else {
+							console.log(log["rows"][i][0]+" ["+log["rows"][i][1]+"]");
+						}
 					}
 
 				}
 			}
-			// clear cookie to prevent repeated logs
-			document.cookie = "fortephplog=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 		}
-	} catch (e) {}
+	} catch (e) {console.log(e)}
+	// clear cookie to prevent repeated logs
+	document.cookie = "fortephplog=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 ffQunatumPhp.show_console();
 
