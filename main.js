@@ -31,7 +31,8 @@ if(!console){
  * @package QuantumPHP
  * @author Frank Forte <frank.forte@gmail.com>
  */
- var ffQunatumPhp = {};
+if(!ffQunatumPhp){ var ffQunatumPhp = {}; }
+
 /**
  * Get a cookie value. If the value is valid json,
  * the return value will be the result of JSON.parse(value)
@@ -55,7 +56,9 @@ ffQunatumPhp.getcookie = function(c_name){
 };
 /**
  * Retrieves and parses the server log, and adds it to the developer console
- */ffQunatumPhp.show_console = function(){
+ */
+ffQunatumPhp.show_console = function(){
+	console.log(ffQunatumPhp.enabled)
 	try{
 		// get logs from gookie, one bite at a time
 		var log = "";
@@ -106,10 +109,14 @@ ffQunatumPhp.getcookie = function(c_name){
 	// clear cookie to prevent repeated logs
 	document.cookie = "fortephplog=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
-ffQunatumPhp.show_console();
+
+document.addEventListener("DOMContentLoaded", ffQunatumPhp.show_console);
+
 
 if(typeof(browser) != "undefined"){
 browser.cookies.onChanged.addListener(ffQunatumPhp.show_console);
 } else if (typeof(chrome) != "undefined"){
 chrome.cookies.onChanged.addListener(ffQunatumPhp.show_console);
 }
+
+console.log( browser.browserAction );
