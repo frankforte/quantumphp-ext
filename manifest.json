@@ -1,9 +1,8 @@
 {
-
-  "description": "Adds server logs sent by QuantumPHP.php to the developer tools console.",
+  "description": "Adds server logs sent by QuantumPHP.php to the developer tools console. Manually update this extnesion often for bug fixes.",
   "manifest_version": 2,
   "name": "QuantumPHP",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "homepage_url": "https://github.com/frankforte/quantumphp",
   "icons": {
     "16": "icon16.png",
@@ -17,5 +16,8 @@
       "matches": ["<all_urls>"],
       "js": ["main.js"]
     }
+  ],
+  "permissions": [
+    "webRequest", "webRequestBlocking", "cookies"
   ]
 }
